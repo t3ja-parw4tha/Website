@@ -87,24 +87,6 @@ body {
     z-index: 1;
     opacity: 0.3;
     mix-blend-mode: screen;
-    transition: opacity 0.3s ease;
-}
-
-/* Hide splash cursor when hovering over text elements */
-.splash-cursor-canvas.hidden {
-    opacity: 0;
-}
-
-/* Light theme splash cursor adjustments */
-[data-theme="light"] .splash-cursor-canvas {
-    opacity: 0.2;
-    mix-blend-mode: multiply;
-}
-
-/* Ensure content panels have proper background to hide splash behind them */
-section, .container, .hero-content, .about-content, .skills-grid, .timeline, .cert-grid, .contact-content, .terminal-window, .nav-container, .footer-content, .resume-card {
-    position: relative;
-    background: var(--bg-primary);
 }
 
 /* Scrollbar Styling */

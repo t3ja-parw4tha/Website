@@ -1770,24 +1770,6 @@ function initSplashCursor() {
     });
 
     updateFrame();
-    
-    // Hide splash cursor when hovering over content panels
-    function hideSplashOnPanels() {
-        const panelElements = document.querySelectorAll('section, .container, .hero-content, .about-content, .skills-grid, .timeline, .cert-grid, .contact-content, .terminal-window, .nav-container, .footer-content, .resume-card');
-        
-        panelElements.forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                canvas.classList.add('hidden');
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                canvas.classList.remove('hidden');
-            });
-        });
-    }
-    
-    // Initialize panel hover detection
-    hideSplashOnPanels();
 }
 
 
