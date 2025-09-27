@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initParallaxEffects();
     initTerminalAnimation();
     initSplashCursor();
-    initHeroAnimations();
 });
 
 // Navigation functionality
@@ -1832,11 +1831,11 @@ function initSplashCursor() {
 
     updateFrame();
     
-    // Hide splash cursor when hovering over text elements
-    function hideSplashOnText() {
-        const textElements = document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, .nav-link, .hero-title, .hero-subtitle, .hero-description');
+    // Hide splash cursor when hovering over panels/tabs
+    function hideSplashOnPanels() {
+        const panelElements = document.querySelectorAll('section, .container, .hero-content, .about-content, .skills-grid, .timeline, .cert-grid, .contact-content, .terminal-window, .nav-container, .footer-content');
         
-        textElements.forEach(element => {
+        panelElements.forEach(element => {
             element.addEventListener('mouseenter', () => {
                 canvas.classList.add('hidden');
             });
@@ -1847,90 +1846,10 @@ function initSplashCursor() {
         });
     }
     
-    // Initialize text hover detection
-    hideSplashOnText();
+    // Initialize panel hover detection
+    hideSplashOnPanels();
 }
 
-// Falling Text Animation
-function createFallingText(element, text) {
-    element.innerHTML = '';
-    element.classList.add('falling-text');
-    
-    const letters = text.split('');
-    letters.forEach((letter, index) => {
-        const span = document.createElement('span');
-        span.textContent = letter === ' ' ? '\u00A0' : letter;
-        span.classList.add('falling-letter');
-        span.style.animationDelay = `${index * 0.1}s`;
-        element.appendChild(span);
-    });
-    
-    // Reset after animation
-    setTimeout(() => {
-        element.classList.remove('falling-text');
-        element.innerHTML = text;
-    }, 3000);
-}
-
-// Decrypted Text Animation
-function createDecryptedText(element, text) {
-    element.innerHTML = '';
-    element.classList.add('decrypted-text');
-    
-    const letters = text.split('');
-    letters.forEach((letter, index) => {
-        const span = document.createElement('span');
-        span.textContent = letter === ' ' ? '\u00A0' : letter;
-        span.classList.add('decrypted-letter');
-        span.style.animationDelay = `${index * 0.05}s`;
-        element.appendChild(span);
-    });
-    
-    // Reset after animation
-    setTimeout(() => {
-        element.classList.remove('decrypted-text');
-        element.innerHTML = text;
-    }, 2000);
-}
-
-// Initialize Hero Animations
-function initHeroAnimations() {
-    const nameBox = document.getElementById('nameBox');
-    const dontClickBtn = document.getElementById('dontClickBtn');
-    const heroSubtitle = document.getElementById('heroSubtitle');
-    const heroDescription = document.getElementById('heroDescription');
-    
-    if (!nameBox || !dontClickBtn) return;
-    
-    // Add click event to name box
-    nameBox.addEventListener('click', () => {
-        const typingText = document.querySelector('.typing-text');
-        if (typingText) {
-            createFallingText(typingText, 'Sai Manikanta Teja Parwatha');
-        }
-    });
-    
-    // Add click event to "Don't Click!" button
-    dontClickBtn.addEventListener('click', () => {
-        const typingText = document.querySelector('.typing-text');
-        if (typingText) {
-            createFallingText(typingText, 'Sai Manikanta Teja Parwatha');
-        }
-    });
-    
-    // Initialize decrypted text for subtitle and description
-    if (heroSubtitle) {
-        setTimeout(() => {
-            createDecryptedText(heroSubtitle, 'Penetration Tester & Security Analyst');
-        }, 2000);
-    }
-    
-    if (heroDescription) {
-        setTimeout(() => {
-            createDecryptedText(heroDescription, 'Offensive security specialist with 3+ years of experience in penetration testing, vulnerability management, and SOC operations across government, healthcare, and enterprise environments.');
-        }, 3000);
-    }
-}
 
 // Function to toggle between single color and multicolor splash
 function toggleSplashColorMode() {
