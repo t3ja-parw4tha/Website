@@ -860,7 +860,7 @@ function initSplashCursor() {
         // Performance settings
         maxParticles: 200,
         particleLifetime: 3000,
-        trailLength: 50,
+        trailLength: 30,
         smoothing: 0.8
     };
     
@@ -923,8 +923,8 @@ function initSplashCursor() {
             this.vx = (Math.random() - 0.5) * 2;
             this.vy = (Math.random() - 0.5) * 2;
             this.life = 1.0;
-            this.decay = Math.random() * 0.02 + 0.005;
-            this.size = Math.random() * 3 + 1;
+            this.decay = Math.random() * 0.015 + 0.008;
+            this.size = Math.random() * 4 + 2;
             this.color = getCurrentColor();
             this.trail = [];
         }
@@ -974,8 +974,8 @@ function initSplashCursor() {
                         point.x, point.y, size
                     );
                     
-                    gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.8})`);
-                    gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.4})`);
+                    gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 1.2})`);
+                    gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.8})`);
                     gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
                     
                     ctx.fillStyle = gradient;
@@ -991,8 +991,8 @@ function initSplashCursor() {
                 this.x, this.y, this.size
             );
             
-            gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 0.9})`);
-            gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 0.5})`);
+            gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 1.2})`);
+            gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 0.8})`);
             gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
             
             ctx.fillStyle = gradient;
@@ -1050,9 +1050,8 @@ function initSplashCursor() {
     function animate() {
         if (!isAnimating) return;
         
-        // Clear canvas with subtle fade for trail effect
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        // Clear canvas completely to prevent trailing
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Update and draw particles
         for (let i = particles.length - 1; i >= 0; i--) {
