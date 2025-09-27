@@ -822,7 +822,12 @@ function playCarSound(type) {
 // Splash Cursor Effect
 function initSplashCursor() {
     const canvas = document.getElementById('splash-cursor');
-    if (!canvas) return;
+    if (!canvas) {
+        console.warn('Splash cursor canvas not found');
+        return;
+    }
+    
+    console.log('Initializing splash cursor...');
     
     const ctx = canvas.getContext('2d');
     const splashes = [];
@@ -1007,7 +1012,20 @@ function initSplashCursor() {
     
     // Initialize
     resizeCanvas();
-    animate();
+    
+    // Test canvas by drawing a small test circle
+    ctx.fillStyle = '#00ff88';
+    ctx.beginPath();
+    ctx.arc(50, 50, 20, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Clear test after 2 seconds and start animation
+    setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        animate();
+    }, 2000);
+    
+    console.log('Splash cursor initialized successfully');
     
     // Event listeners
     document.addEventListener('mousemove', handleMouseMove, { passive: true });
