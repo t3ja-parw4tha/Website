@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initSmoothScrolling();
     initParallaxEffects();
     initTerminalAnimation();
+    initTimelineCar();
 });
 
 // Navigation functionality
@@ -589,6 +590,229 @@ console.log(`
 ╚══════════════════════════════════════════════════════════════╝
 `);
 
+// Timeline Car Animation
+function initTimelineCar() {
+    const car = document.querySelector('.timeline-car');
+    const timeline = document.querySelector('.timeline');
+    const experienceSection = document.querySelector('#experience');
+    
+    if (!car || !timeline || !experienceSection) return;
+    
+    let lastScrollY = 0;
+    let isMoving = false;
+    let movingTimeout;
+    
+    // Car movement based on scroll
+    function updateCarPosition() {
+        const sectionRect = experienceSection.getBoundingClientRect();
+        const timelineRect = timeline.getBoundingClientRect();
+        
+        // Check if experience section is in view
+        if (sectionRect.bottom < 0 || sectionRect.top > window.innerHeight) {
+            return;
+        }
+        
+        // Calculate scroll progress within the timeline
+        const sectionTop = sectionRect.top;
+        const sectionHeight = sectionRect.height;
+        const windowHeight = window.innerHeight;
+        
+        // Calculate the progress (0 to 1) based on how much of the section is visible
+        let progress = 0;
+        
+        if (sectionTop <= 0) {
+            // Section is scrolled past the top
+            progress = Math.min(Math.abs(sectionTop) / (sectionHeight - windowHeight), 1);
+        } else {
+            // Section is coming into view
+            progress = Math.max(0, (windowHeight - sectionTop) / windowHeight * 0.3);
+        }
+        
+        // Clamp progress between 0 and 1
+        progress = Math.max(0, Math.min(1, progress));
+        
+        // Calculate car position along timeline
+        const timelineHeight = timelineRect.height - 100; // Leave some space at bottom
+        const carPosition = progress * timelineHeight;
+        
+        // Update car position
+        car.style.top = `${carPosition}px`;
+        
+        // Detect if scrolling (for movement animations)
+        const currentScrollY = window.pageYOffset;
+        const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+        
+        if (scrollDelta > 2) {
+            if (!isMoving) {
+                car.classList.add('moving');
+                isMoving = true;
+            }
+            
+            // Clear previous timeout
+            clearTimeout(movingTimeout);
+            
+            // Set timeout to stop moving animation
+            movingTimeout = setTimeout(() => {
+                car.classList.remove('moving');
+                isMoving = false;
+            }, 150);
+        }
+        
+        lastScrollY = currentScrollY;
+        
+        // Add extra effects based on scroll speed
+        if (scrollDelta > 10) {
+            car.style.transform = `translateX(-50%) scale(1.1)`;
+            setTimeout(() => {
+                car.style.transform = `translateX(-50%) scale(1)`;
+            }, 100);
+        }
+    }
+    
+    // Throttled scroll handler for performance
+    let ticking = false;
+    function handleScroll() {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                updateCarPosition();
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+    
+    // Attach scroll listener
+    window.addEventListener('scroll', handleScroll);
+    
+    // Initial position
+    updateCarPosition();
+    
+    // Add click interaction for fun
+    car.addEventListener('click', () => {
+        car.style.animation = 'none';
+        car.style.transform = 'translateX(-50%) scale(1.2) rotate(5deg)';
+        
+        setTimeout(() => {
+            car.style.animation = '';
+            car.style.transform = 'translateX(-50%) scale(1)';
+        }, 300);
+        
+        // Add temporary sparkle effect
+        createSparkleEffect(car);
+    });
+}
+
+// Sparkle effect for car interaction
+function createSparkleEffect(element) {
+    const sparkles = [];
+    const sparkleCount = 8;
+    
+    for (let i = 0; i < sparkleCount; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.style.cssText = `
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1000;
+            animation: sparkleAnimation 0.8s ease-out forwards;
+        `;
+        
+        // Position sparkles around the car
+        const angle = (i / sparkleCount) * 2 * Math.PI;
+        const distance = 30 + Math.random() * 20;
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+        
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        
+        element.appendChild(sparkle);
+        sparkles.push(sparkle);
+        
+        // Remove sparkle after animation
+        setTimeout(() => {
+            if (sparkle.parentNode) {
+                sparkle.parentNode.removeChild(sparkle);
+            }
+        }, 800);
+    }
+    
+    // Add sparkle animation keyframes if not already present
+    if (!document.querySelector('#sparkle-animation')) {
+        const style = document.createElement('style');
+        style.id = 'sparkle-animation';
+        style.textContent = `
+            @keyframes sparkleAnimation {
+                0% {
+                    opacity: 1;
+                    transform: scale(0) rotate(0deg);
+                }
+                50% {
+                    opacity: 1;
+                    transform: scale(1) rotate(180deg);
+                }
+                100% {
+                    opacity: 0;
+                    transform: scale(0) rotate(360deg);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+// Enhanced timeline markers with car interaction
+function enhanceTimelineMarkers() {
+    const markers = document.querySelectorAll('.timeline-marker');
+    const car = document.querySelector('.timeline-car');
+    
+    markers.forEach((marker, index) => {
+        // Add hover effect that affects the car
+        marker.addEventListener('mouseenter', () => {
+            if (car) {
+                car.style.filter = 'drop-shadow(0 4px 16px rgba(0, 255, 136, 0.8)) hue-rotate(30deg)';
+            }
+        });
+        
+        marker.addEventListener('mouseleave', () => {
+            if (car) {
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
+            }
+        });
+    });
+}
+
+// Initialize enhanced timeline features
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(enhanceTimelineMarkers, 1000); // Wait for DOM to be fully ready
+});
+
+// Car sound effects (optional - can be enabled later)
+function playCarSound(type) {
+    // This would play car sounds if audio files are added
+    // For now, we'll use visual feedback only
+    const car = document.querySelector('.timeline-car');
+    if (!car) return;
+    
+    switch(type) {
+        case 'accelerate':
+            car.style.filter = 'drop-shadow(0 4px 12px rgba(0, 255, 136, 0.8)) brightness(1.2)';
+            setTimeout(() => {
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
+            }, 200);
+            break;
+        case 'brake':
+            car.style.transform = 'translateX(-50%) scaleX(0.9)';
+            setTimeout(() => {
+                car.style.transform = 'translateX(-50%) scaleX(1)';
+            }, 150);
+            break;
+    }
+}
+
 // Export functions for testing (if needed)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -596,6 +820,7 @@ if (typeof module !== 'undefined' && module.exports) {
         initScrollAnimations,
         initTypingAnimations,
         initCounterAnimations,
-        showNotification
+        showNotification,
+        initTimelineCar
     };
 }
