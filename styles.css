@@ -1007,46 +1007,107 @@ section {
     color: var(--primary-color);
 }
 
-/* Contact Form */
-.contact-form {
-    background: var(--bg-card);
-    padding: var(--spacing-xl);
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-primary);
+/* Resume Download */
+.resume-download {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.form-group {
+.resume-card {
+    background: var(--bg-card);
+    padding: var(--spacing-2xl);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-primary);
+    text-align: center;
+    max-width: 400px;
+    transition: var(--transition-normal);
+}
+
+.resume-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.resume-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
     margin-bottom: var(--spacing-lg);
 }
 
-.form-group input,
-.form-group textarea {
-    width: 100%;
-    padding: var(--spacing-md);
-    background: var(--bg-tertiary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
+.resume-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
     color: var(--text-primary);
-    font-family: inherit;
-    font-size: 1rem;
-    transition: var(--transition-fast);
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-    outline: none;
+.resume-card p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-xl);
+    line-height: 1.6;
+}
+
+.resume-card .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    font-size: 1.1rem;
+    padding: var(--spacing-md) var(--spacing-xl);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    margin-left: var(--spacing-md);
+}
+
+.theme-toggle:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+    transform: scale(1.1);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
-    color: var(--text-muted);
+.theme-toggle i {
+    font-size: 1.2rem;
+    transition: var(--transition-normal);
 }
 
-.form-group textarea {
-    resize: vertical;
-    min-height: 120px;
+/* Light Theme Variables */
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #e9ecef;
+    --bg-card: rgba(255, 255, 255, 0.9);
+    --bg-glass: rgba(255, 255, 255, 0.9);
+    
+    --text-primary: #212529;
+    --text-secondary: #495057;
+    --text-tertiary: #6c757d;
+    --text-muted: #adb5bd;
+    
+    --border-primary: #dee2e6;
+    --border-secondary: #e9ecef;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+}
+
+[data-theme="light"] .theme-toggle i {
+    transform: rotate(180deg);
 }
 
 /* Footer */
@@ -1117,6 +1178,12 @@ section {
 
     .hamburger {
         display: flex;
+    }
+    
+    .theme-toggle {
+        margin-left: var(--spacing-sm);
+        width: 40px;
+        height: 40px;
     }
 
     .hamburger.active .bar:nth-child(2) {

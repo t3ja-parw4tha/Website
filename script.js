@@ -7,11 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollAnimations();
     initTypingAnimations();
     initCounterAnimations();
-    initContactForm();
     initSmoothScrolling();
     initParallaxEffects();
     initTerminalAnimation();
     initSplashCursor();
+    initThemeToggle();
 });
 
 // Navigation functionality
@@ -244,66 +244,6 @@ function initTerminalAnimation() {
     });
 }
 
-// Contact form functionality
-function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
-        
-        // Show loading state
-        submitBtn.innerHTML = '<span class="loading"></span> Sending...';
-        submitBtn.disabled = true;
-        
-        // Simulate form submission (replace with actual form handling)
-        try {
-            await simulateFormSubmission(new FormData(form));
-            
-            // Success state
-            submitBtn.innerHTML = '<i class="fas fa-check"></i> Message Sent!';
-            submitBtn.style.background = 'var(--primary-color)';
-            
-            // Reset form
-            form.reset();
-            
-            // Show success message
-            showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-            
-        } catch (error) {
-            // Error state
-            submitBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error';
-            submitBtn.style.background = 'var(--secondary-color)';
-            
-            showNotification('Sorry, there was an error sending your message. Please try again.', 'error');
-        }
-        
-        // Reset button after 3 seconds
-        setTimeout(() => {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-            submitBtn.style.background = '';
-        }, 3000);
-    });
-}
-
-// Simulate form submission (replace with actual backend integration)
-function simulateFormSubmission(formData) {
-    return new Promise((resolve, reject) => {
-        // Simulate network delay
-        setTimeout(() => {
-            // Simulate random success/failure for demo
-            if (Math.random() > 0.1) {
-                resolve('Success');
-            } else {
-                reject('Error');
-            }
-        }, 2000);
-    });
-}
 
 // Notification system
 function showNotification(message, type = 'info') {
@@ -1850,6 +1790,43 @@ function initSplashCursor() {
     hideSplashOnPanels();
 }
 
+
+// Theme Toggle Functionality
+function initThemeToggle() {
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    
+    // Get saved theme or default to dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+    
+    themeToggle.addEventListener('click', () => {
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+        
+        // Add a smooth transition effect
+        body.style.transition = 'background-color 0.3s ease, color 0.3s ease';
+        setTimeout(() => {
+            body.style.transition = '';
+        }, 300);
+    });
+}
+
+function updateThemeIcon(theme) {
+    const themeToggle = document.getElementById('themeToggle');
+    const icon = themeToggle.querySelector('i');
+    
+    if (theme === 'dark') {
+        icon.className = 'fas fa-moon';
+    } else {
+        icon.className = 'fas fa-sun';
+    }
+}
 
 // Function to toggle between single color and multicolor splash
 function toggleSplashColorMode() {

@@ -27,6 +27,9 @@
                 <li><a href="#certifications" class="nav-link">Certifications</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
             <div class="hamburger">
                 <span class="bar"></span>
                 <span class="bar"></span>
@@ -397,22 +400,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="contact-form">
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <input type="text" id="name" name="name" placeholder="Your Name" required>
+                <div class="resume-download">
+                    <div class="resume-card">
+                        <div class="resume-icon">
+                            <i class="fas fa-file-pdf"></i>
                         </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" placeholder="Your Email" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" name="message" rows="5" placeholder="Your Message" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Send Message</button>
-                    </form>
+                        <h3>Download Resume</h3>
+                        <p>Get my complete professional profile and technical expertise</p>
+                        <a href="resume.pdf" class="btn btn-primary" download>
+                            <i class="fas fa-download"></i>
+                            Download PDF
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
