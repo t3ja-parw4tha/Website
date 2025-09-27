@@ -1904,17 +1904,17 @@ function initHeroAnimations() {
     
     // Add click event to name box
     nameBox.addEventListener('click', () => {
-        const heroName = document.getElementById('heroName');
-        if (heroName) {
-            createFallingText(heroName, 'Sai Manikanta Teja Parwatha');
+        const typingText = document.querySelector('.typing-text');
+        if (typingText) {
+            createFallingText(typingText, 'Sai Manikanta Teja Parwatha');
         }
     });
     
     // Add click event to "Don't Click!" button
     dontClickBtn.addEventListener('click', () => {
-        const heroName = document.getElementById('heroName');
-        if (heroName) {
-            createFallingText(heroName, 'Sai Manikanta Teja Parwatha');
+        const typingText = document.querySelector('.typing-text');
+        if (typingText) {
+            createFallingText(typingText, 'Sai Manikanta Teja Parwatha');
         }
     });
     
