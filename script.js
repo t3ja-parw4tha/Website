@@ -773,13 +773,13 @@ function enhanceTimelineMarkers() {
         // Add hover effect that affects the car
         marker.addEventListener('mouseenter', () => {
             if (car) {
-                car.style.filter = 'drop-shadow(0 4px 16px rgba(0, 255, 136, 0.8)) hue-rotate(30deg)';
+                car.style.filter = 'drop-shadow(0 4px 16px rgba(0, 168, 255, 0.8)) hue-rotate(30deg)';
             }
         });
         
         marker.addEventListener('mouseleave', () => {
             if (car) {
-                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 168, 255, 0.4))';
             }
         });
     });
@@ -799,9 +799,9 @@ function playCarSound(type) {
     
     switch(type) {
         case 'accelerate':
-            car.style.filter = 'drop-shadow(0 4px 12px rgba(0, 255, 136, 0.8)) brightness(1.2)';
+            car.style.filter = 'drop-shadow(0 4px 12px rgba(0, 168, 255, 0.8)) brightness(1.2)';
             setTimeout(() => {
-                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 168, 255, 0.4))';
             }, 200);
             break;
         case 'brake':
