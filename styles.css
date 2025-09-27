@@ -73,6 +73,20 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
+}
+
+/* Splash Cursor Canvas */
+.splash-cursor-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.8;
+    mix-blend-mode: screen;
 }
 
 /* Scrollbar Styling */

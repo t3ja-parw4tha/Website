@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initParallaxEffects();
     initTerminalAnimation();
     initTimelineCar();
+    initSplashCursor();
 });
 
 // Navigation functionality
@@ -587,8 +588,13 @@ console.log(`
 ║                                                              ║
 ║  Thanks for checking out the console! 👨‍💻                    ║
 ║                                                              ║
+║  🎨 Try: toggleSplashColorMode() to switch splash colors    ║
+║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
+
+// Make toggle function globally available for testing
+window.toggleSplashColorMode = toggleSplashColorMode;
 
 // Timeline Car Animation
 function initTimelineCar() {
@@ -813,6 +819,212 @@ function playCarSound(type) {
     }
 }
 
+// Splash Cursor Effect
+function initSplashCursor() {
+    const canvas = document.getElementById('splash-cursor');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    const splashes = [];
+    let animationId;
+    
+    // Configuration
+    const config = {
+        // Set to true for single blue color, false for multicolor
+        singleColor: true,
+        
+        // Blue theme colors
+        blueColors: [
+            '#00a8ff',  // Primary blue
+            '#0078d4',  // Dark blue
+            '#40c4ff',  // Light blue
+            '#1e90ff',  // Dodger blue
+            '#4169e1'   // Royal blue
+        ],
+        
+        // Multicolor palette (fallback)
+        multiColors: [
+            '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7',
+            '#dda0dd', '#98d8c8', '#f7dc6f', '#bb8fce', '#85c1e9'
+        ],
+        
+        maxSplashes: 15,
+        splashSize: 80,
+        fadeSpeed: 0.02,
+        spreadSpeed: 2
+    };
+    
+    // Resize canvas
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    
+    // Splash class
+    class Splash {
+        constructor(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = Math.random() * config.splashSize + 20;
+            this.opacity = 1;
+            this.growth = Math.random() * config.spreadSpeed + 1;
+            
+            // Choose color based on configuration
+            if (config.singleColor) {
+                this.color = config.blueColors[Math.floor(Math.random() * config.blueColors.length)];
+            } else {
+                this.color = config.multiColors[Math.floor(Math.random() * config.multiColors.length)];
+            }
+            
+            // Add some randomness to the effect
+            this.pulseSpeed = Math.random() * 0.1 + 0.05;
+            this.pulseOffset = Math.random() * Math.PI * 2;
+        }
+        
+        update() {
+            this.size += this.growth;
+            this.opacity -= config.fadeSpeed;
+            this.growth *= 0.98; // Slow down growth
+        }
+        
+        draw() {
+            ctx.save();
+            
+            // Create radial gradient for glow effect
+            const gradient = ctx.createRadialGradient(
+                this.x, this.y, 0,
+                this.x, this.y, this.size
+            );
+            
+            // Add pulsing effect
+            const pulse = Math.sin(Date.now() * this.pulseSpeed + this.pulseOffset) * 0.2 + 0.8;
+            const alpha = this.opacity * pulse;
+            
+            gradient.addColorStop(0, `${this.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`);
+            gradient.addColorStop(0.3, `${this.color}${Math.floor(alpha * 0.8 * 255).toString(16).padStart(2, '0')}`);
+            gradient.addColorStop(0.6, `${this.color}${Math.floor(alpha * 0.4 * 255).toString(16).padStart(2, '0')}`);
+            gradient.addColorStop(1, `${this.color}00`);
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.restore();
+        }
+        
+        isDead() {
+            return this.opacity <= 0 || this.size > config.splashSize * 3;
+        }
+    }
+    
+    // Add splash at cursor position
+    function addSplash(x, y) {
+        if (splashes.length >= config.maxSplashes) {
+            splashes.shift(); // Remove oldest splash
+        }
+        
+        // Add multiple small splashes for better effect
+        for (let i = 0; i < 3; i++) {
+            const offsetX = (Math.random() - 0.5) * 20;
+            const offsetY = (Math.random() - 0.5) * 20;
+            splashes.push(new Splash(x + offsetX, y + offsetY));
+        }
+    }
+    
+    // Animation loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw splashes
+        for (let i = splashes.length - 1; i >= 0; i--) {
+            const splash = splashes[i];
+            splash.update();
+            splash.draw();
+            
+            if (splash.isDead()) {
+                splashes.splice(i, 1);
+            }
+        }
+        
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    // Event listeners
+    let lastMouseTime = 0;
+    let mouseMoving = false;
+    
+    function handleMouseMove(e) {
+        const now = Date.now();
+        
+        // Throttle splash creation for performance
+        if (now - lastMouseTime > 50) {
+            addSplash(e.clientX, e.clientY);
+            lastMouseTime = now;
+        }
+        
+        mouseMoving = true;
+        clearTimeout(window.mouseMoveTimeout);
+        window.mouseMoveTimeout = setTimeout(() => {
+            mouseMoving = false;
+        }, 100);
+    }
+    
+    function handleMouseClick(e) {
+        // Create bigger splash on click
+        for (let i = 0; i < 5; i++) {
+            const angle = (Math.PI * 2 * i) / 5;
+            const distance = Math.random() * 30;
+            const x = e.clientX + Math.cos(angle) * distance;
+            const y = e.clientY + Math.sin(angle) * distance;
+            addSplash(x, y);
+        }
+    }
+    
+    // Touch support for mobile
+    function handleTouchMove(e) {
+        e.preventDefault();
+        const touch = e.touches[0];
+        handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+    
+    function handleTouchStart(e) {
+        const touch = e.touches[0];
+        handleMouseClick({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+    
+    // Initialize
+    resizeCanvas();
+    animate();
+    
+    // Event listeners
+    document.addEventListener('mousemove', handleMouseMove, { passive: true });
+    document.addEventListener('click', handleMouseClick);
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Cleanup function
+    return function cleanup() {
+        cancelAnimationFrame(animationId);
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('click', handleMouseClick);
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchstart', handleTouchStart);
+        window.removeEventListener('resize', resizeCanvas);
+    };
+}
+
+// Function to toggle between single color and multicolor splash
+function toggleSplashColorMode() {
+    // This function can be called to switch between single blue and multicolor
+    const canvas = document.getElementById('splash-cursor');
+    if (canvas && canvas.splashConfig) {
+        canvas.splashConfig.singleColor = !canvas.splashConfig.singleColor;
+        console.log('Splash color mode:', canvas.splashConfig.singleColor ? 'Single Blue' : 'Multicolor');
+    }
+}
+
 // Export functions for testing (if needed)
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
@@ -821,6 +1033,8 @@ if (typeof module !== 'undefined' && module.exports) {
         initTypingAnimations,
         initCounterAnimations,
         showNotification,
-        initTimelineCar
+        initTimelineCar,
+        initSplashCursor,
+        toggleSplashColorMode
     };
 }
