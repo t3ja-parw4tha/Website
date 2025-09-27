@@ -579,6 +579,102 @@ section {
     width: 2px;
     background: var(--border-primary);
     transform: translateX(-50%);
+    z-index: 1;
+}
+
+/* Animated Car */
+.timeline-car {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    z-index: 10;
+    transition: top 0.1s ease-out;
+    pointer-events: none;
+}
+
+.car-icon {
+    width: 60px;
+    height: 24px;
+    filter: drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4));
+    animation: carBounce 2s ease-in-out infinite;
+}
+
+.car-icon:hover {
+    filter: drop-shadow(0 4px 12px rgba(0, 255, 136, 0.6));
+}
+
+/* Car bounce animation */
+@keyframes carBounce {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-2px); }
+}
+
+/* Car trail effect */
+.car-trail {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    width: 30px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color));
+    transform: translateY(-50%);
+    opacity: 0.6;
+    animation: trailPulse 1s ease-in-out infinite;
+}
+
+@keyframes trailPulse {
+    0%, 100% { opacity: 0.3; width: 20px; }
+    50% { opacity: 0.8; width: 35px; }
+}
+
+/* Enhanced car animations when scrolling */
+.timeline-car.moving .car-icon {
+    animation: carMoving 0.3s ease-in-out infinite;
+}
+
+.timeline-car.moving .speed-lines {
+    opacity: 1;
+    animation: speedLines 0.2s ease-in-out infinite;
+}
+
+.timeline-car.moving .exhaust {
+    opacity: 1;
+}
+
+@keyframes carMoving {
+    0%, 100% { transform: translateY(-1px) rotate(-0.5deg); }
+    50% { transform: translateY(-3px) rotate(0.5deg); }
+}
+
+@keyframes speedLines {
+    0% { opacity: 0.8; transform: translateX(0); }
+    100% { opacity: 0.2; transform: translateX(-10px); }
+}
+
+/* Car headlight glow effect */
+.car-icon .headlights {
+    filter: drop-shadow(0 0 3px #ffff99);
+}
+
+/* Road surface effect on timeline */
+.timeline::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--bg-tertiary) 0px,
+        var(--bg-tertiary) 10px,
+        transparent 10px,
+        transparent 15px
+    );
+    transform: translateX(-50%);
+    z-index: 0;
+    opacity: 0.3;
 }
 
 .timeline-item {
@@ -1031,6 +1127,21 @@ section {
 
     .timeline::before {
         left: 20px;
+    }
+
+    .timeline::after {
+        left: 20px;
+        width: 6px;
+    }
+
+    .timeline-car {
+        left: 20px;
+        transform: translateX(-50%);
+    }
+
+    .car-icon {
+        width: 40px;
+        height: 16px;
     }
 
     .timeline-item {
