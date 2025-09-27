@@ -779,13 +779,13 @@ function enhanceTimelineMarkers() {
         // Add hover effect that affects the car
         marker.addEventListener('mouseenter', () => {
             if (car) {
-                car.style.filter = 'drop-shadow(0 4px 16px rgba(0, 168, 255, 0.8)) hue-rotate(30deg)';
+                car.style.filter = 'drop-shadow(0 4px 16px rgba(0, 255, 136, 0.8)) hue-rotate(30deg)';
             }
         });
         
         marker.addEventListener('mouseleave', () => {
             if (car) {
-                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 168, 255, 0.4))';
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
             }
         });
     });
@@ -805,9 +805,9 @@ function playCarSound(type) {
     
     switch(type) {
         case 'accelerate':
-            car.style.filter = 'drop-shadow(0 4px 12px rgba(0, 168, 255, 0.8)) brightness(1.2)';
+            car.style.filter = 'drop-shadow(0 4px 12px rgba(0, 255, 136, 0.8)) brightness(1.2)';
             setTimeout(() => {
-                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 168, 255, 0.4))';
+                car.style.filter = 'drop-shadow(0 2px 8px rgba(0, 255, 136, 0.4))';
             }, 200);
             break;
         case 'brake':
@@ -833,13 +833,13 @@ function initSplashCursor() {
         // Set to true for single blue color, false for multicolor
         singleColor: true,
         
-        // Blue theme colors
-        blueColors: [
-            '#00a8ff',  // Primary blue
-            '#0078d4',  // Dark blue
-            '#40c4ff',  // Light blue
-            '#1e90ff',  // Dodger blue
-            '#4169e1'   // Royal blue
+        // Green theme colors
+        greenColors: [
+            '#00ff88',  // Primary green
+            '#00cc6a',  // Dark green
+            '#4ecdc4',  // Accent green
+            '#00ff9f',  // Light green
+            '#00e676'   // Material green
         ],
         
         // Multicolor palette (fallback)
@@ -871,7 +871,7 @@ function initSplashCursor() {
             
             // Choose color based on configuration
             if (config.singleColor) {
-                this.color = config.blueColors[Math.floor(Math.random() * config.blueColors.length)];
+                this.color = config.greenColors[Math.floor(Math.random() * config.greenColors.length)];
             } else {
                 this.color = config.multiColors[Math.floor(Math.random() * config.multiColors.length)];
             }
@@ -884,7 +884,12 @@ function initSplashCursor() {
         update() {
             this.size += this.growth;
             this.opacity -= config.fadeSpeed;
-            this.growth *= 0.98; // Slow down growth
+            this.growth *= 0.95; // Slow down growth
+            
+            // Ensure opacity never gets stuck
+            if (this.opacity < 0.01) {
+                this.opacity = 0;
+            }
         }
         
         draw() {
@@ -914,7 +919,7 @@ function initSplashCursor() {
         }
         
         isDead() {
-            return this.opacity <= 0 || this.size > config.splashSize * 3;
+            return this.opacity <= 0 || this.size > config.splashSize * 2.5;
         }
     }
     
@@ -934,17 +939,24 @@ function initSplashCursor() {
     
     // Animation loop
     function animate() {
+        // Clear canvas with better performance
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Update and draw splashes
         for (let i = splashes.length - 1; i >= 0; i--) {
             const splash = splashes[i];
             splash.update();
-            splash.draw();
             
             if (splash.isDead()) {
                 splashes.splice(i, 1);
+            } else {
+                splash.draw();
             }
+        }
+        
+        // Force cleanup every 100 frames to prevent memory issues
+        if (splashes.length > config.maxSplashes * 2) {
+            splashes.splice(0, splashes.length - config.maxSplashes);
         }
         
         animationId = requestAnimationFrame(animate);
