@@ -1100,8 +1100,46 @@ section {
     --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
 }
 
+/* Light theme navigation fixes */
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid var(--border-primary);
+}
+
+[data-theme="light"] .nav-link {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .nav-link:hover,
+[data-theme="light"] .nav-link.active {
+    color: var(--primary-color) !important;
+}
+
+[data-theme="light"] .logo-text {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="light"] .theme-toggle {
+    background: var(--bg-card);
+    border: 1px solid var(--border-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    border-color: var(--primary-color);
+}
+
 [data-theme="light"] .theme-toggle i {
     transform: rotate(180deg);
+}
+
+/* Light theme splash cursor */
+[data-theme="light"] .splash-cursor-canvas {
+    opacity: 0.4;
+    mix-blend-mode: multiply;
 }
 
 /* Footer */
