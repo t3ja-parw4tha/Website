@@ -819,7 +819,7 @@ function playCarSound(type) {
     }
 }
 
-// Splash Cursor Effect
+// Enhanced Splash Cursor Effect - Fluid Simulation
 function initSplashCursor() {
     const canvas = document.getElementById('splash-cursor');
     if (!canvas) {
@@ -827,93 +827,173 @@ function initSplashCursor() {
         return;
     }
     
-    console.log('Initializing splash cursor...');
+    console.log('Initializing enhanced splash cursor...');
     
     const ctx = canvas.getContext('2d');
-    const splashes = [];
     let animationId;
+    let isAnimating = false;
     
-    // Configuration
+    // Enhanced configuration for smooth fluid-like effect
     const config = {
-        // Set to true for single blue color, false for multicolor
-        singleColor: true,
+        // Fluid simulation parameters
+        SIM_RESOLUTION: 64,
+        DYE_RESOLUTION: 512,
+        DENSITY_DISSIPATION: 0.98,
+        VELOCITY_DISSIPATION: 0.99,
+        PRESSURE: 0.8,
+        PRESSURE_ITERATIONS: 4,
+        CURL: 30,
+        SPLAT_RADIUS: 0.25,
+        SPLAT_FORCE: 6000,
+        SHADING: true,
+        COLOR_UPDATE_SPEED: 0.5,
         
-        // Green theme colors
-        greenColors: [
-            '#00ff88',  // Primary green
-            '#00cc6a',  // Dark green
-            '#4ecdc4',  // Accent green
-            '#00ff9f',  // Light green
-            '#00e676'   // Material green
+        // Color palette - green theme
+        colors: [
+            { r: 0, g: 255, b: 136 },    // Primary green
+            { r: 0, g: 204, b: 106 },    // Dark green
+            { r: 78, g: 205, b: 196 },   // Accent green
+            { r: 0, g: 255, b: 159 },    // Light green
+            { r: 0, g: 230, b: 118 }     // Material green
         ],
         
-        // Multicolor palette (fallback)
-        multiColors: [
-            '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7',
-            '#dda0dd', '#98d8c8', '#f7dc6f', '#bb8fce', '#85c1e9'
-        ],
-        
-        maxSplashes: 15,
-        splashSize: 80,
-        fadeSpeed: 0.02,
-        spreadSpeed: 2
+        // Performance settings
+        maxParticles: 200,
+        particleLifetime: 3000,
+        trailLength: 50,
+        smoothing: 0.8
     };
     
-    // Resize canvas
+    // Fluid simulation variables
+    let dye, velocity, divergence, curl, pressure;
+    let particles = [];
+    let mousePos = { x: 0, y: 0 };
+    let prevMousePos = { x: 0, y: 0 };
+    let isMouseDown = false;
+    let colorIndex = 0;
+    let lastColorUpdate = 0;
+    
+    // Resize canvas with high DPI support
     function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const dpr = window.devicePixelRatio || 1;
+        const rect = canvas.getBoundingClientRect();
+        
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        
+        ctx.scale(dpr, dpr);
+        canvas.style.width = rect.width + 'px';
+        canvas.style.height = rect.height + 'px';
+        
+        // Reinitialize fluid simulation
+        initFluidSimulation();
     }
     
-    // Splash class
-    class Splash {
+    // Initialize fluid simulation textures
+    function initFluidSimulation() {
+        const width = canvas.width;
+        const height = canvas.height;
+        
+        // Create off-screen canvases for fluid simulation
+        dye = createOffscreenCanvas(width, height);
+        velocity = createOffscreenCanvas(width, height);
+        divergence = createOffscreenCanvas(width, height);
+        curl = createOffscreenCanvas(width, height);
+        pressure = createOffscreenCanvas(width, height);
+    }
+    
+    // Create off-screen canvas for fluid simulation
+    function createOffscreenCanvas(width, height) {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        return {
+            canvas: canvas,
+            ctx: canvas.getContext('2d'),
+            width: width,
+            height: height
+        };
+    }
+    
+    // Particle class for smooth trails
+    class Particle {
         constructor(x, y) {
             this.x = x;
             this.y = y;
-            this.size = Math.random() * config.splashSize + 20;
-            this.opacity = 1;
-            this.growth = Math.random() * config.spreadSpeed + 1;
-            
-            // Choose color based on configuration
-            if (config.singleColor) {
-                this.color = config.greenColors[Math.floor(Math.random() * config.greenColors.length)];
-            } else {
-                this.color = config.multiColors[Math.floor(Math.random() * config.multiColors.length)];
-            }
-            
-            // Add some randomness to the effect
-            this.pulseSpeed = Math.random() * 0.1 + 0.05;
-            this.pulseOffset = Math.random() * Math.PI * 2;
+            this.vx = (Math.random() - 0.5) * 2;
+            this.vy = (Math.random() - 0.5) * 2;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.02 + 0.005;
+            this.size = Math.random() * 3 + 1;
+            this.color = getCurrentColor();
+            this.trail = [];
         }
         
         update() {
-            this.size += this.growth;
-            this.opacity -= config.fadeSpeed;
-            this.growth *= 0.95; // Slow down growth
+            // Add to trail
+            this.trail.push({ x: this.x, y: this.y, life: this.life });
+            if (this.trail.length > config.trailLength) {
+                this.trail.shift();
+            }
             
-            // Ensure opacity never gets stuck
-            if (this.opacity < 0.01) {
-                this.opacity = 0;
+            // Update position
+            this.x += this.vx;
+            this.y += this.vy;
+            
+            // Apply fluid-like movement
+            this.vx *= 0.99;
+            this.vy *= 0.99;
+            
+            // Add some randomness
+            this.vx += (Math.random() - 0.5) * 0.1;
+            this.vy += (Math.random() - 0.5) * 0.1;
+            
+            // Update life
+            this.life -= this.decay;
+            
+            // Boundary check
+            if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                this.life = 0;
             }
         }
         
         draw() {
+            if (this.life <= 0) return;
+            
             ctx.save();
             
-            // Create radial gradient for glow effect
+            // Draw trail
+            for (let i = 0; i < this.trail.length; i++) {
+                const point = this.trail[i];
+                const alpha = (point.life * this.life) / this.trail.length;
+                const size = (this.size * alpha) / 2;
+                
+                if (size > 0.1) {
+                    const gradient = ctx.createRadialGradient(
+                        point.x, point.y, 0,
+                        point.x, point.y, size
+                    );
+                    
+                    gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.8})`);
+                    gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${alpha * 0.4})`);
+                    gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
+                    
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.arc(point.x, point.y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // Draw main particle
             const gradient = ctx.createRadialGradient(
                 this.x, this.y, 0,
                 this.x, this.y, this.size
             );
             
-            // Add pulsing effect
-            const pulse = Math.sin(Date.now() * this.pulseSpeed + this.pulseOffset) * 0.2 + 0.8;
-            const alpha = this.opacity * pulse;
-            
-            gradient.addColorStop(0, `${this.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`);
-            gradient.addColorStop(0.3, `${this.color}${Math.floor(alpha * 0.8 * 255).toString(16).padStart(2, '0')}`);
-            gradient.addColorStop(0.6, `${this.color}${Math.floor(alpha * 0.4 * 255).toString(16).padStart(2, '0')}`);
-            gradient.addColorStop(1, `${this.color}00`);
+            gradient.addColorStop(0, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 0.9})`);
+            gradient.addColorStop(0.5, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, ${this.life * 0.5})`);
+            gradient.addColorStop(1, `rgba(${this.color.r}, ${this.color.g}, ${this.color.b}, 0)`);
             
             ctx.fillStyle = gradient;
             ctx.beginPath();
@@ -924,81 +1004,113 @@ function initSplashCursor() {
         }
         
         isDead() {
-            return this.opacity <= 0 || this.size > config.splashSize * 2.5;
+            return this.life <= 0;
         }
     }
     
-    // Add splash at cursor position
-    function addSplash(x, y) {
-        if (splashes.length >= config.maxSplashes) {
-            splashes.shift(); // Remove oldest splash
+    // Get current color with smooth transitions
+    function getCurrentColor() {
+        const now = Date.now();
+        if (now - lastColorUpdate > 1000 / config.COLOR_UPDATE_SPEED) {
+            colorIndex = (colorIndex + 1) % config.colors.length;
+            lastColorUpdate = now;
         }
         
-        // Add multiple small splashes for better effect
-        for (let i = 0; i < 3; i++) {
-            const offsetX = (Math.random() - 0.5) * 20;
-            const offsetY = (Math.random() - 0.5) * 20;
-            splashes.push(new Splash(x + offsetX, y + offsetY));
-        }
+        const currentColor = config.colors[colorIndex];
+        const nextColor = config.colors[(colorIndex + 1) % config.colors.length];
+        
+        const progress = ((now - lastColorUpdate) / (1000 / config.COLOR_UPDATE_SPEED));
+        
+        return {
+            r: Math.floor(currentColor.r + (nextColor.r - currentColor.r) * progress),
+            g: Math.floor(currentColor.g + (nextColor.g - currentColor.g) * progress),
+            b: Math.floor(currentColor.b + (nextColor.b - currentColor.b) * progress)
+        };
     }
     
-    // Animation loop
-    function animate() {
-        // Clear canvas with better performance
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Update and draw splashes
-        for (let i = splashes.length - 1; i >= 0; i--) {
-            const splash = splashes[i];
-            splash.update();
+    // Add particles at mouse position
+    function addParticles(x, y, count = 3) {
+        for (let i = 0; i < count; i++) {
+            if (particles.length >= config.maxParticles) {
+                particles.shift();
+            }
             
-            if (splash.isDead()) {
-                splashes.splice(i, 1);
+            const offsetX = (Math.random() - 0.5) * 10;
+            const offsetY = (Math.random() - 0.5) * 10;
+            particles.push(new Particle(x + offsetX, y + offsetY));
+        }
+    }
+    
+    // Smooth mouse movement interpolation
+    function lerp(start, end, factor) {
+        return start + (end - start) * factor;
+    }
+    
+    // Main animation loop
+    function animate() {
+        if (!isAnimating) return;
+        
+        // Clear canvas with subtle fade for trail effect
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const particle = particles[i];
+            particle.update();
+            
+            if (particle.isDead()) {
+                particles.splice(i, 1);
             } else {
-                splash.draw();
+                particle.draw();
             }
         }
         
-        // Force cleanup every 100 frames to prevent memory issues
-        if (splashes.length > config.maxSplashes * 2) {
-            splashes.splice(0, splashes.length - config.maxSplashes);
+        // Add continuous particles for smooth effect
+        if (isMouseDown || (Math.abs(mousePos.x - prevMousePos.x) > 1 || Math.abs(mousePos.y - prevMousePos.y) > 1)) {
+            addParticles(mousePos.x, mousePos.y, 2);
         }
+        
+        // Update previous mouse position
+        prevMousePos.x = lerp(prevMousePos.x, mousePos.x, config.smoothing);
+        prevMousePos.y = lerp(prevMousePos.y, mousePos.y, config.smoothing);
         
         animationId = requestAnimationFrame(animate);
     }
     
-    // Event listeners
-    let lastMouseTime = 0;
-    let mouseMoving = false;
-    
+    // Event handlers
     function handleMouseMove(e) {
-        const now = Date.now();
+        const rect = canvas.getBoundingClientRect();
+        mousePos.x = e.clientX - rect.left;
+        mousePos.y = e.clientY - rect.top;
         
-        // Throttle splash creation for performance
-        if (now - lastMouseTime > 50) {
-            addSplash(e.clientX, e.clientY);
-            lastMouseTime = now;
-        }
-        
-        mouseMoving = true;
-        clearTimeout(window.mouseMoveTimeout);
-        window.mouseMoveTimeout = setTimeout(() => {
-            mouseMoving = false;
-        }, 100);
-    }
-    
-    function handleMouseClick(e) {
-        // Create bigger splash on click
-        for (let i = 0; i < 5; i++) {
-            const angle = (Math.PI * 2 * i) / 5;
-            const distance = Math.random() * 30;
-            const x = e.clientX + Math.cos(angle) * distance;
-            const y = e.clientY + Math.sin(angle) * distance;
-            addSplash(x, y);
+        if (!isAnimating) {
+            isAnimating = true;
+            animate();
         }
     }
     
-    // Touch support for mobile
+    function handleMouseDown(e) {
+        isMouseDown = true;
+        const rect = canvas.getBoundingClientRect();
+        mousePos.x = e.clientX - rect.left;
+        mousePos.y = e.clientY - rect.top;
+        
+        // Create burst effect on click
+        for (let i = 0; i < 15; i++) {
+            const angle = (Math.PI * 2 * i) / 15;
+            const distance = Math.random() * 30 + 10;
+            const x = mousePos.x + Math.cos(angle) * distance;
+            const y = mousePos.y + Math.sin(angle) * distance;
+            addParticles(x, y, 1);
+        }
+    }
+    
+    function handleMouseUp() {
+        isMouseDown = false;
+    }
+    
+    // Touch support
     function handleTouchMove(e) {
         e.preventDefault();
         const touch = e.touches[0];
@@ -1006,41 +1118,40 @@ function initSplashCursor() {
     }
     
     function handleTouchStart(e) {
+        e.preventDefault();
         const touch = e.touches[0];
-        handleMouseClick({ clientX: touch.clientX, clientY: touch.clientY });
+        handleMouseDown({ clientX: touch.clientX, clientY: touch.clientY });
+    }
+    
+    function handleTouchEnd(e) {
+        e.preventDefault();
+        handleMouseUp();
     }
     
     // Initialize
     resizeCanvas();
     
-    // Test canvas by drawing a small test circle
-    ctx.fillStyle = '#00ff88';
-    ctx.beginPath();
-    ctx.arc(50, 50, 20, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Clear test after 2 seconds and start animation
-    setTimeout(() => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        animate();
-    }, 2000);
-    
-    console.log('Splash cursor initialized successfully');
-    
     // Event listeners
     document.addEventListener('mousemove', handleMouseMove, { passive: true });
-    document.addEventListener('click', handleMouseClick);
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
     window.addEventListener('resize', resizeCanvas);
+    
+    console.log('Enhanced splash cursor initialized successfully');
     
     // Cleanup function
     return function cleanup() {
+        isAnimating = false;
         cancelAnimationFrame(animationId);
         document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('click', handleMouseClick);
+        document.removeEventListener('mousedown', handleMouseDown);
+        document.removeEventListener('mouseup', handleMouseUp);
         document.removeEventListener('touchmove', handleTouchMove);
         document.removeEventListener('touchstart', handleTouchStart);
+        document.removeEventListener('touchend', handleTouchEnd);
         window.removeEventListener('resize', resizeCanvas);
     };
 }
