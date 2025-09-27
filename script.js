@@ -1771,15 +1771,23 @@ function initSplashCursor() {
 
     updateFrame();
     
-    // Ensure splash cursor stays behind content panels
-    function ensureSplashLayering() {
-        // The splash cursor will always be visible but behind content
-        // This is handled by CSS z-index layering
-        console.log('Splash cursor layering initialized - splash will appear behind content panels');
+    // Hide splash cursor when hovering over content panels
+    function hideSplashOnPanels() {
+        const panelElements = document.querySelectorAll('section, .container, .hero-content, .about-content, .skills-grid, .timeline, .cert-grid, .contact-content, .terminal-window, .nav-container, .footer-content, .resume-card');
+        
+        panelElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                canvas.classList.add('hidden');
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                canvas.classList.remove('hidden');
+            });
+        });
     }
     
-    // Initialize splash layering
-    ensureSplashLayering();
+    // Initialize panel hover detection
+    hideSplashOnPanels();
 }
 
 

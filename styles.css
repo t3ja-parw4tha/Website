@@ -92,7 +92,7 @@ body {
 
 /* Hide splash cursor when hovering over text elements */
 .splash-cursor-canvas.hidden {
-    z-index: -1;
+    opacity: 0;
 }
 
 /* Light theme splash cursor adjustments */
@@ -101,17 +101,10 @@ body {
     mix-blend-mode: multiply;
 }
 
-/* Ensure text panels appear above splash cursor */
+/* Ensure content panels have proper background to hide splash behind them */
 section, .container, .hero-content, .about-content, .skills-grid, .timeline, .cert-grid, .contact-content, .terminal-window, .nav-container, .footer-content, .resume-card {
     position: relative;
-    z-index: 2;
     background: var(--bg-primary);
-}
-
-/* Ensure text elements have proper layering */
-h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, .nav-link, .hero-title, .hero-subtitle, .hero-description {
-    position: relative;
-    z-index: 3;
 }
 
 /* Scrollbar Styling */
