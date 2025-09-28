@@ -12,7 +12,66 @@ document.addEventListener('DOMContentLoaded', function() {
     initTerminalAnimation();
     initSplashCursor();
     initThemeToggle();
+    initHeroEffects();
 });
+
+// Hero cinematic effects: shimmer and subtle parallax
+function initHeroEffects() {
+    // shimmer glint on the hero title
+    const title = document.querySelector('.hero-title .shimmer');
+    if (title) {
+        // trigger a glint once after load
+        requestAnimationFrame(() => {
+            title.classList.add('glint');
+            setTimeout(() => title.classList.remove('glint'), 1400);
+        });
+    }
+
+    // parallax on mouse move (desktop only)
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const terminal = document.querySelector('.terminal-window');
+    const hero = document.querySelector('.hero');
+    if (!terminal || !hero) return;
+
+    let last = { x: 0, y: 0 };
+    let ticking = false;
+
+    function onMove(e) {
+        const rect = hero.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const x = (e.clientX - cx) / rect.width;
+        const y = (e.clientY - cy) / rect.height;
+        last = { x, y };
+        if (!ticking) {
+            window.requestAnimationFrame(() => {
+                const tx = last.x * 8; // small tilt
+                const ty = last.y * 8;
+                terminal.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+                const titleEl = document.querySelector('.hero-title');
+                if (titleEl) titleEl.style.transform = `translate3d(${tx * 0.25}px, ${ty * 0.25}px, 0)`;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }
+
+    // bind move on desktop only
+    function enableParallax() {
+        window.addEventListener('mousemove', onMove);
+    }
+
+    function disableParallax() {
+        window.removeEventListener('mousemove', onMove);
+        if (terminal) terminal.style.transform = '';
+    }
+
+    if (window.innerWidth > 720) enableParallax();
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 720) enableParallax(); else disableParallax();
+    });
+}
 
 // Navigation functionality
 function initNavigation() {
@@ -162,16 +221,20 @@ function initTypingAnimations() {
     typingElements.forEach(element => {
         const text = element.textContent;
         element.textContent = '';
-        element.style.borderRight = '2px solid var(--primary-color)';
+        // start with no caret; JS will show it exactly when typing begins
+        element.style.borderRight = 'none';
         
         let i = 0;
         const typeWriter = () => {
             if (i < text.length) {
+                // ensure caret appears exactly when first character is added
+                if (i === 0) element.style.borderRight = '2px solid var(--primary-color)';
                 element.textContent += text.charAt(i);
                 i++;
                 setTimeout(typeWriter, 50 + Math.random() * 50);
             } else {
-                // Blinking cursor animation
+                // After typing completes, start a blinking caret
+                element.style.borderRight = '2px solid var(--primary-color)';
                 setInterval(() => {
                     element.style.borderRightColor = 
                         element.style.borderRightColor === 'transparent' ? 
@@ -180,7 +243,7 @@ function initTypingAnimations() {
             }
         };
         
-        // Start typing after a delay
+        // Start typing after a delay; typing routine will reveal caret at the first char
         setTimeout(typeWriter, 1000);
     });
 }

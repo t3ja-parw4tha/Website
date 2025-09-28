@@ -40,23 +40,11 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero">
+        <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-container">
             <div class="hero-content">
-                <div class="hero-text">
-                    <h1 class="hero-title">
-                        <span class="typing-text">Sai Manikanta Teja Parwatha</span>
-                    </h1>
-                    <h2 class="hero-subtitle" id="heroSubtitle">Penetration Tester & Security Analyst</h2>
-                    <p class="hero-description" id="heroDescription">
-                        Offensive security specialist with 3+ years of experience in penetration testing, 
-                        vulnerability management, and SOC operations across government, healthcare, and enterprise environments.
-                    </p>
-                    <div class="hero-buttons">
-                        <a href="#contact" class="btn btn-primary">Get In Touch</a>
-                        <a href="#experience" class="btn btn-secondary">View Work</a>
-                    </div>
-                </div>
-                <div class="hero-visual">
+                <!-- Terminal-like hero: main name, subtitle and description inside a wide terminal/card -->
+                <div class="hero-visual terminal-hero">
                     <div class="terminal-window">
                         <div class="terminal-header">
                             <div class="terminal-buttons">
@@ -64,20 +52,16 @@
                                 <span class="btn-minimize"></span>
                                 <span class="btn-maximize"></span>
                             </div>
-                            <div class="terminal-title">pentest@security:~$</div>
+                            <div class="terminal-title">My@portfolio:~$</div>
                         </div>
                         <div class="terminal-body">
-                            <div class="terminal-line">
-                                <span class="prompt">root@kali:~#</span>
-                                <span class="command typing-command">nmap -sS -O target.com</span>
-                            </div>
-                            <div class="terminal-output">
-                                <div>Starting Nmap scan...</div>
-                                <div>Host is up (0.023s latency)</div>
-                                <div class="text-success">22/tcp   open  ssh</div>
-                                <div class="text-success">80/tcp   open  http</div>
-                                <div class="text-warning">443/tcp  open  https</div>
-                                <div>Scan complete.</div>
+                            <!-- shield removed per request -->
+                            <h1 class="hero-title"><span class="typing-text shimmer">Sai Manikanta Teja Parwatha</span></h1>
+                            <h2 class="hero-subtitle">Penetration Tester &amp; Security Analyst</h2>
+                            <p class="hero-description">Offensive security specialist with 3+ years of experience in penetration testing, vulnerability management, and SOC operations across government, healthcare, and enterprise environments.</p>
+                            <div class="hero-buttons">
+                                <a href="#contact" class="btn btn-primary">Get In Touch</a>
+                                <a href="#experience" class="btn btn-secondary">View Work</a>
                             </div>
                         </div>
                     </div>
@@ -319,7 +303,11 @@
                     </div>
                     <h3>CompTIA Security+</h3>
                     <p>Industry-standard cybersecurity certification</p>
-                    <div class="cert-status achieved">Certified</div>
+                    <!-- Certificate download button and Verify button (stacked) -->
+                    <div class="cert-actions">
+                        <a class="btn btn-primary" href="securityplus.pdf" download>Certificate (PDF)</a>
+                        <a class="btn btn-verify" href="https://www.comptia.org/certifications/security-plus" target="_blank" rel="noopener">Verify / Learn More</a>
+                    </div>
                 </div>
                 <div class="cert-card">
                     <div class="cert-icon">

@@ -7,24 +7,29 @@
 
 :root {
     /* Color Palette - Cybersecurity Theme */
-    --primary-color: #00ff88;
-    --primary-dark: #00cc6a;
+    /* Accent color: switched to cyan for cleaner contrast */
+    /* Softer primary blue for long viewing comfort */
+    --primary-color: #3B82F6; /* Tailwind Blue-500 - gentler than neon cyan */
+    --primary-dark: #2563EB;
+    /* Subtitle / secondary heading color for hierarchy */
+    --subtitle-color: #38BDF8; /* light teal */
     --secondary-color: #ff6b6b;
     --accent-color: #4ecdc4;
     --warning-color: #ffa726;
     
     /* Background Colors */
-    --bg-primary: #0a0a0a;
-    --bg-secondary: #0f0f0f;
-    --bg-tertiary: #151515;
-    --bg-card: rgba(20, 20, 20, 0.9);
-    --bg-glass: rgba(25, 25, 25, 0.9);
+    /* Darker base for better contrast */
+    --bg-primary: #060607;
+    --bg-secondary: #0d0e10;
+    --bg-tertiary: #131416;
+    --bg-card: rgba(12, 12, 12, 0.96);
+    --bg-glass: rgba(14, 14, 16, 0.85);
     
     /* Text Colors */
-    --text-primary: #ffffff;
-    --text-secondary: #b0b0b0;
-    --text-tertiary: #808080;
-    --text-muted: #606060;
+    --text-primary: #eaeaea;
+    --text-secondary: #c3c9cc;
+    --text-tertiary: #9aa3a8;
+    --text-muted: #7b8386;
     
     /* Border Colors */
     --border-primary: #333333;
@@ -53,7 +58,7 @@
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-    --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+    --shadow-glow: 0 0 24px rgba(0, 242, 255, 0.12);
     
     /* Transitions */
     --transition-fast: 0.15s ease;
@@ -207,17 +212,53 @@ body {
     overflow: hidden;
 }
 
-.hero::before {
-    content: '';
+/* Cinematic animated gradient behind hero */
+.hero-bg {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(0, 255, 136, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(78, 205, 196, 0.1) 0%, transparent 50%);
+    inset: 0;
+    /* cinematic background disabled to restore original static look */
+    background: none;
+    z-index: 0;
     pointer-events: none;
+}
+
+@keyframes heroGradient {
+    /* keyframes left in place but not used when cinematic background disabled */
+    0% { transform: translate3d(0,0,0) rotate(0deg) scale(1); }
+    50% { transform: translate3d(-4%,2%,0) rotate(2deg) scale(1.02); }
+    100% { transform: translate3d(0,0,0) rotate(0deg) scale(1); }
+}
+
+/* Shimmer (chroma) effect for hero title */
+.shimmer {
+    position: relative;
+    display: inline-block;
+    /* shimmer visual disabled to restore solid text color by default */
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    background-size: auto;
+    transition: none;
+}
+
+.shimmer.glint {
+    /* no-op when shimmer is disabled */
+    background-position: initial;
+}
+
+/* Parallax layering: keep hero content above bg */
+.hero-container { position: relative; z-index: 2; }
+.terminal-window { position: relative; z-index: 3; }
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-bg { animation: none; }
+    .shimmer { transition: none; }
+}
+
+.hero::before {
+    /* decorative overlay removed to restore original look */
+    content: none;
 }
 
 .hero-container {
@@ -229,24 +270,22 @@ body {
 
 .hero-content {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--spacing-2xl);
     align-items: center;
 }
 
 .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 700;
+    font-weight: 800;
     margin-bottom: var(--spacing-md);
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* use a solid color so title is always visible */
+    color: var(--primary-color);
 }
 
 .hero-subtitle {
     font-size: 1.5rem;
-    color: var(--primary-color);
+    color: var(--subtitle-color);
     margin-bottom: var(--spacing-md);
     font-weight: 600;
 }
@@ -273,7 +312,7 @@ body {
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-lg);
-    max-width: 500px;
+    max-width: 100%;
 }
 
 .terminal-header {
@@ -283,6 +322,8 @@ body {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--border-primary);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
 }
 
 .terminal-buttons {
@@ -309,8 +350,9 @@ body {
 .terminal-body {
     padding: var(--spacing-md);
     font-family: var(--font-mono);
-    font-size: 0.9rem;
-    line-height: 1.5;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
 }
 
 .terminal-line {
@@ -331,6 +373,60 @@ body {
     color: var(--text-secondary);
 }
 
+/* Terminal hero styles (wide card with large name) */
+.terminal-hero .terminal-window {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    overflow: visible; /* allow content to wrap without clipping */
+}
+
+.terminal-hero .terminal-body {
+    font-family: var(--font-primary);
+    padding: calc(var(--spacing-lg));
+}
+
+/* Decorative shield behind hero content */
+/* ...existing code... */
+
+.terminal-hero .hero-title {
+    /* slightly reduced to make the full name fit better */
+    font-size: clamp(2.75rem, 6.5vw, 4.75rem);
+    line-height: 0.95;
+    margin-bottom: 1rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    word-break: break-word;
+    white-space: normal; /* allow wrapping */
+    overflow-wrap: break-word;
+}
+
+.terminal-hero .hero-subtitle {
+    font-size: clamp(1.1rem, 2.2vw, 1.75rem);
+    color: var(--subtitle-color);
+    margin-bottom: var(--spacing-md);
+    font-weight: 700;
+}
+
+.terminal-hero .hero-description {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    line-height: 1.6;
+}
+
+.terminal-hero .hero-buttons {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+@media (max-width: 720px) {
+    .terminal-hero .hero-title {
+        font-size: 2rem;
+    }
+}
+
 .text-success { color: var(--primary-color); }
 .text-warning { color: var(--warning-color); }
 
@@ -338,9 +434,10 @@ body {
 .typing-text,
 .typing-command {
     overflow: hidden;
-    border-right: 2px solid var(--primary-color);
+    /* caret/typing animation is handled in JS to ensure correct timing */
+    border-right: none;
     white-space: nowrap;
-    animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+    animation: none;
 }
 
 @keyframes typing {
@@ -405,7 +502,7 @@ body {
 .btn-secondary {
     background: transparent;
     color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    border: 2px solid rgba(0,242,255,0.18);
 }
 
 .btn-secondary:hover {
@@ -863,6 +960,31 @@ section {
     border: 1px solid var(--warning-color);
 }
 
+/* Certificate actions: stack Certificate PDF and Verify button */
+.cert-actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: center;
+    margin-top: var(--spacing-md);
+}
+
+.btn-verify {
+    background: var(--primary-color);
+    color: var(--bg-primary);
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-verify:hover,
+.btn-verify:focus {
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
+}
+
 /* Education Section */
 .education-section,
 .achievements-section {
@@ -1104,6 +1226,12 @@ section {
     --primary-dark: #106ebe;
 }
 
+/* Ensure dark mode uses the same primary blue as light mode when requested */
+[data-theme="dark"] {
+    --primary-color: #0078D4;
+    --primary-dark: #106ebe;
+}
+
 /* Light theme navigation fixes */
 [data-theme="light"] .navbar {
     background: rgba(255, 255, 255, 0.95) !important;
@@ -1180,6 +1308,15 @@ section {
 [data-theme="light"] .btn-secondary:hover {
     background: var(--primary-color);
     color: white;
+}
+
+/* Force terminal hero title to solid color in light mode for readability */
+[data-theme="light"] .terminal-hero .hero-title {
+    background: none !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    -webkit-text-fill-color: initial !important;
+    color: var(--primary-color) !important;
 }
 
 /* Light theme splash cursor */
