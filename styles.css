@@ -1097,7 +1097,11 @@ section {
     --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
     --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
-    --shadow-glow: 0 0 20px rgba(0, 255, 136, 0.3);
+    --shadow-glow: 0 0 20px rgba(0, 120, 212, 0.3);
+    
+    /* Override primary colors for light theme */
+    --primary-color: #0078D4;
+    --primary-dark: #106ebe;
 }
 
 /* Light theme navigation fixes */
@@ -1140,10 +1144,49 @@ section {
     transform: rotate(180deg);
 }
 
+/* Additional light theme blue overrides */
+[data-theme="light"] .hero-title {
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .section-title {
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .hero-subtitle {
+    color: var(--primary-color);
+}
+
+[data-theme="light"] .btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+[data-theme="light"] .btn-primary:hover {
+    background: var(--primary-dark);
+}
+
+[data-theme="light"] .btn-secondary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
 /* Light theme splash cursor */
 [data-theme="light"] .splash-cursor-canvas {
-    opacity: 0.4;
+    opacity: 0.3;
     mix-blend-mode: multiply;
+    filter: hue-rotate(200deg) saturate(0.8);
 }
 
 /* Footer */
