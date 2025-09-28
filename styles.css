@@ -136,15 +136,15 @@ body {
     height: 70px;
 }
 
-.nav-logo .logo-text {
-    font-size: 1.5rem;
-    font-weight: 700;
-    font-family: var(--font-mono);
-    color: var(--text-primary);
+.nav-logo {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    transition: var(--transition-normal);
 }
 
-.logo-accent {
-    color: var(--primary-color);
+.nav-logo:hover {
+    transform: scale(1.1);
+    color: var(--primary-dark);
 }
 
 .nav-menu {
@@ -1116,8 +1116,12 @@ section {
     color: var(--primary-color) !important;
 }
 
-[data-theme="light"] .logo-text {
-    color: var(--text-primary) !important;
+[data-theme="light"] .nav-logo {
+    color: var(--primary-color) !important;
+}
+
+[data-theme="light"] .nav-logo:hover {
+    color: var(--primary-dark) !important;
 }
 
 [data-theme="light"] .theme-toggle {
