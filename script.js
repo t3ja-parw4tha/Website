@@ -1841,8 +1841,8 @@ function initThemeToggle() {
     const themeToggle = document.getElementById('themeToggle');
     const body = document.body;
     
-    // Get saved theme or default to dark
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    // Get saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
     body.setAttribute('data-theme', savedTheme);
     updateThemeIcon(savedTheme);
     
