@@ -1,7 +1,10 @@
 // Portfolio Website JavaScript
 // Author: Sai Manikanta Teja Parwatha
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
+    // Render Content from Data
+    renderContent();
+
     // Initialize all functionality
     initNavigation();
     initScrollAnimations();
@@ -12,6 +15,98 @@ document.addEventListener('DOMContentLoaded', function() {
     initTerminalAnimation();
 });
 
+// Render Content Function
+function renderContent() {
+    if (typeof portfolioData === 'undefined') {
+        console.error('Portfolio data not found!');
+        return;
+    }
+
+    // Profile - NAME IS NOW THE MAIN TITLE
+    document.getElementById('hero-status').textContent = portfolioData.profile.status;
+    document.getElementById('hero-title').textContent = portfolioData.profile.name;  // Changed: name is now the main title
+    document.getElementById('hero-name').textContent = portfolioData.profile.heroSubtitle;  // Changed: subtitle goes here
+
+
+    // About
+    document.getElementById('about-summary').textContent = portfolioData.about.summary;
+
+    const statsContainer = document.getElementById('about-stats');
+    statsContainer.innerHTML = portfolioData.about.stats.map(stat => `
+        <div class="stat-item">
+            <div class="stat-number" data-target="${stat.number.replace('+', '')}">${stat.number}</div>
+            <div class="stat-label">${stat.label}</div>
+        </div>
+    `).join('');
+
+    const expertiseContainer = document.getElementById('about-expertise');
+    expertiseContainer.innerHTML = portfolioData.about.expertise.map(item => `
+        <div class="expertise-card">
+            <div class="card-icon"><i class="fas ${item.icon}"></i></div>
+            <div>
+                <h3>${item.title}</h3>
+                <p>${item.description}</p>
+            </div>
+        </div>
+    `).join('');
+
+    // Skills
+    const skillsContainer = document.getElementById('skills-container');
+    skillsContainer.innerHTML = portfolioData.skills.map(group => `
+        <div class="skill-group">
+            <div class="skill-group-title">
+                <i class="fas ${group.icon}"></i>
+                <span>${group.category}</span>
+            </div>
+            <div class="skill-tags">
+                ${group.items.map(skill => `<span class="skill-tag">${skill}</span>`).join('')}
+            </div>
+        </div>
+    `).join('');
+
+    // Experience
+    const experienceContainer = document.getElementById('experience-container');
+    experienceContainer.innerHTML = portfolioData.experience.map(job => `
+        <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-panel">
+                <div class="timeline-date">${job.date}</div>
+                <h3 class="timeline-role">${job.role}</h3>
+                <h4 class="timeline-company">${job.company} | ${job.location}</h4>
+                <ul class="timeline-list">
+                    ${job.responsibilities.map(resp => `<li>${resp}</li>`).join('')}
+                </ul>
+            </div>
+        </div>
+    `).join('');
+
+    // Certifications
+    const certsContainer = document.getElementById('certifications-container');
+    certsContainer.innerHTML = portfolioData.certifications.map(cert => `
+        <div class="cert-card glass-panel">
+            <div class="cert-icon"><i class="fas ${cert.icon}"></i></div>
+            <h3>${cert.name}</h3>
+            <div class="cert-issuer">${cert.issuer} • ${cert.year}</div>
+            <div class="cert-status">${cert.status}</div>
+        </div>
+    `).join('');
+
+    // Contact
+    document.getElementById('contact-title').textContent = portfolioData.contact.title;
+    document.getElementById('contact-text').textContent = portfolioData.contact.text;
+
+    const contactContainer = document.getElementById('contact-container');
+    contactContainer.innerHTML = portfolioData.contact.methods.map(method => `
+        <a href="${method.action}" class="contact-method">
+            <div class="method-icon"><i class="fas ${method.icon}"></i></div>
+            <div class="method-details">
+                <span>${method.label}</span>
+                <strong>${method.value}</strong>
+            </div>
+        </a>
+    `).join('');
+}
+
 // Navigation functionality
 function initNavigation() {
     const hamburger = document.querySelector('.hamburger');
@@ -20,10 +115,10 @@ function initNavigation() {
     const navbar = document.querySelector('.navbar');
 
     // Mobile menu toggle
-    hamburger?.addEventListener('click', function() {
+    hamburger?.addEventListener('click', function () {
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
-        
+
         // Animate hamburger bars
         const bars = hamburger.querySelectorAll('.bar');
         if (hamburger.classList.contains('active')) {
@@ -42,7 +137,7 @@ function initNavigation() {
         link.addEventListener('click', () => {
             hamburger?.classList.remove('active');
             navMenu.classList.remove('active');
-            
+
             // Reset hamburger bars
             const bars = hamburger.querySelectorAll('.bar');
             bars[0].style.transform = 'none';
@@ -68,15 +163,15 @@ function initNavigation() {
 function updateActiveNavLink() {
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('.nav-link');
-    
+
     let current = '';
     const scrollY = window.pageYOffset;
-    
+
     sections.forEach(section => {
         const sectionHeight = section.offsetHeight;
         const sectionTop = section.offsetTop - 100;
         const sectionId = section.getAttribute('id');
-        
+
         if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
             current = sectionId;
         }
@@ -93,17 +188,17 @@ function updateActiveNavLink() {
 // Smooth scrolling functionality
 function initSmoothScrolling() {
     const links = document.querySelectorAll('a[href^="#"]');
-    
+
     links.forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
-            
+
             const targetId = this.getAttribute('href');
             const targetSection = document.querySelector(targetId);
-            
+
             if (targetSection) {
                 const offsetTop = targetSection.offsetTop - 80;
-                
+
                 window.scrollTo({
                     top: offsetTop,
                     behavior: 'smooth'
@@ -131,27 +226,29 @@ function initScrollAnimations() {
     }, observerOptions);
 
     // Elements to animate
-    const animatedElements = document.querySelectorAll('.glass-panel, .section-title, .skill-tag, .contact-method');
+    // Wait for dynamic content to load before selecting
+    setTimeout(() => {
+        const animatedElements = document.querySelectorAll('.glass-panel, .section-title, .skill-tag, .contact-method');
+        animatedElements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
 
-    animatedElements.forEach((element, index) => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        
-        // Stagger delay for grouped elements
-        if (element.classList.contains('skill-tag')) {
-             element.style.transitionDelay = `${(index % 10) * 0.05}s`;
-        }
-        
-        observer.observe(element);
-    });
+            // Stagger delay for grouped elements
+            if (element.classList.contains('skill-tag')) {
+                element.style.transitionDelay = `${(index % 10) * 0.05}s`;
+            }
+
+            observer.observe(element);
+        });
+    }, 100);
 }
 
 // Typing animation for hero section
 function initTypingAnimations() {
     const commandElement = document.querySelector('.typing-command');
     if (!commandElement) return;
-    
+
     const commands = ['whoami', 'cat skills.txt', './run_pentest.sh', 'ping 8.8.8.8'];
     let commandIndex = 0;
     let charIndex = 0;
@@ -160,7 +257,7 @@ function initTypingAnimations() {
 
     function type() {
         const currentCommand = commands[commandIndex];
-        
+
         if (isDeleting) {
             commandElement.textContent = currentCommand.substring(0, charIndex - 1);
             charIndex--;
@@ -189,19 +286,22 @@ function initTypingAnimations() {
 
 // Counter animation for stats
 function initCounterAnimations() {
-    const counters = document.querySelectorAll('.stat-number');
-    const counterObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                animateCounter(entry.target);
-                counterObserver.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.5 });
+    // Wait for dynamic content
+    setTimeout(() => {
+        const counters = document.querySelectorAll('.stat-number');
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter(entry.target);
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
 
-    counters.forEach(counter => {
-        counterObserver.observe(counter);
-    });
+        counters.forEach(counter => {
+            counterObserver.observe(counter);
+        });
+    }, 100);
 }
 
 function animateCounter(element) {
@@ -213,7 +313,7 @@ function animateCounter(element) {
     const updateCounter = () => {
         current += increment;
         if (current < target) {
-            element.textContent = Math.floor(current);
+            element.textContent = Math.floor(current) + '+';
             requestAnimationFrame(updateCounter);
         } else {
             element.textContent = target + '+';
@@ -223,93 +323,71 @@ function animateCounter(element) {
     updateCounter();
 }
 
-// Terminal output animation
-function initTerminalAnimation() {
-    const outputLines = document.querySelectorAll('.output-line');
-    
-    outputLines.forEach((line, index) => {
-        line.style.animationDelay = `${index * 0.5}s`;
-    });
-}
-
-// WebGL Fluid Simulation Splash Cursor (Simplified for performance)
+// Splash cursor effect
 function initSplashCursor() {
     const canvas = document.getElementById('splash-cursor');
     if (!canvas) return;
-    
-    // Basic setup to avoid errors if WebGL fails or is too heavy
-    // For a full fluid sim, we'd need a lot more code. 
-    // Here we'll implement a simple particle follower for the "premium" feel without 2000 lines of WebGL code.
-    
+
     const ctx = canvas.getContext('2d');
-    let width, height;
-    let particles = [];
-    
-    function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-    }
-    
-    window.addEventListener('resize', resize);
-    resize();
-    
-    class Particle {
-        constructor(x, y) {
-            this.x = x;
-            this.y = y;
-            this.size = Math.random() * 5 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
-            this.color = `rgba(59, 130, 246, ${Math.random() * 0.5})`;
-            this.life = 100;
-        }
-        
-        update() {
-            this.x += this.speedX;
-            this.y += this.speedY;
-            this.life -= 2;
-            this.size *= 0.95;
-        }
-        
-        draw() {
-            ctx.fillStyle = this.color;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+
+    window.addEventListener('mousemove', (e) => {
+        particles.push({
+            x: e.clientX,
+            y: e.clientY,
+            size: Math.random() * 5 + 1,
+            speedX: Math.random() * 3 - 1.5,
+            speedY: Math.random() * 3 - 1.5,
+            life: 1
+        });
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.speedX;
+            p.y += p.speedY;
+            p.life -= 0.02;
+
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+
+            ctx.fillStyle = `rgba(59, 130, 246, ${p.life * 0.5})`;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fill();
         }
-    }
-    
-    function handleMouseMove(e) {
-        for (let i = 0; i < 3; i++) {
-            particles.push(new Particle(e.clientX, e.clientY));
-        }
-    }
-    
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    function animate() {
-        ctx.clearRect(0, 0, width, height);
-        
-        for (let i = 0; i < particles.length; i++) {
-            particles[i].update();
-            particles[i].draw();
-            
-            if (particles[i].life <= 0) {
-                particles.splice(i, 1);
-                i--;
-            }
-        }
-        
+
         requestAnimationFrame(animate);
     }
-    
+
     animate();
+
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
 }
 
-// Console easter egg
-console.log(`
-%c  SMTP Portfolio  %c  Cybersecurity Professional  `, 
-'background: #3b82f6; color: white; padding: 5px; border-radius: 3px 0 0 3px; font-weight: bold;', 
-'background: #1e293b; color: white; padding: 5px; border-radius: 0 3px 3px 0;'
+// Terminal animation
+function initTerminalAnimation() {
+    const outputLines = document.querySelectorAll('.output-line');
+    outputLines.forEach((line, index) => {
+        line.style.animationDelay = `${index * 0.3}s`;
+    });
+}
+
+// Console Easter Egg
+console.log(
+    '%cSMTP Portfolio',
+    'background: #3b82f6; color: white; padding: 5px; border-radius: 3px 0 0 3px; font-weight: bold;',
+    'background: #1e293b; color: white; padding: 5px; border-radius: 0 3px 3px 0;'
 );
 console.log('Looking for vulnerabilities? Keep looking! 😉');

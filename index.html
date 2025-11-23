@@ -35,7 +35,9 @@
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
             <div class="nav-actions">
-                <a href="resume.pdf" class="btn btn-sm btn-outline" download>Resume</a>
+                <a href="resume.pdf" class="btn btn-sm btn-outline" download>
+                    <i class="fas fa-file-download"></i> Resume
+                </a>
                 <div class="hamburger">
                     <span class="bar"></span>
                     <span class="bar"></span>
@@ -53,18 +55,10 @@
                 <div class="hero-text">
                     <div class="status-badge">
                         <span class="status-dot"></span>
-                        Available for opportunities
+                        <span id="hero-status">Available for opportunities</span>
                     </div>
-                    <h1 class="hero-title">
-                        Securing the <span class="text-gradient">Digital Frontier</span>
-                    </h1>
-                    <p class="hero-subtitle">
-                        Sai Manikanta Teja Parwatha
-                    </p>
-                    <p class="hero-description">
-                        Offensive Security Specialist & Penetration Tester with 3+ years of experience safeguarding
-                        government, healthcare, and enterprise infrastructures.
-                    </p>
+                    <h1 class="hero-title" id="hero-title"><!-- Dynamic Content --></h1>
+                    <p class="hero-subtitle" id="hero-name"><!-- Dynamic Content --></p>
                     <div class="hero-buttons">
                         <a href="#contact" class="btn btn-primary">
                             <span>Initialize Contact</span>
@@ -75,7 +69,6 @@
                         </a>
                     </div>
                 </div>
-
                 <div class="hero-visual">
                     <div class="terminal-window glass-panel">
                         <div class="terminal-header">
@@ -100,288 +93,81 @@
                             </div>
                         </div>
                     </div>
+                    <div class="scroll-indicator">
+                        <div class="mouse">
+                            <div class="wheel"></div>
+                        </div>
+                        <span>Scroll</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="scroll-indicator">
-            <span>Scroll to Explore</span>
-            <div class="mouse">
-                <div class="wheel"></div>
             </div>
         </div>
     </section>
 
     <!-- About Section -->
-    <section id="about" class="about">
+    <section id="about">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">About Me</h2>
-                <p class="section-subtitle">Behind the Terminal</p>
+                <h2 class="section-title">Mission Profile</h2>
+                <span class="section-subtitle">About Me</span>
             </div>
-
             <div class="about-grid">
                 <div class="about-card glass-panel">
-                    <p class="about-text">
-                        I am a passionate cybersecurity professional specializing in <span class="highlight">offensive
-                            security</span> and <span class="highlight">penetration testing</span>.
-                        With expertise in vulnerability assessment, compliance frameworks, and risk management, I help
-                        organizations
-                        strengthen their security posture against evolving threats. My approach combines technical
-                        prowess with strategic risk analysis.
-                    </p>
-
-                    <div class="stats-row">
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="3">0</div>
-                            <div class="stat-label">Years Exp</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="50">0</div>
-                            <div class="stat-label">Assessments</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-target="100">0</div>
-                            <div class="stat-label">Vulns Found</div>
-                        </div>
+                    <div class="about-text">
+                        <p id="about-summary"><!-- Dynamic Content --></p>
                     </div>
+                    <div class="stats-row" id="about-stats"><!-- Dynamic Content --></div>
                 </div>
-
-                <div class="expertise-cards">
-                    <div class="expertise-card glass-panel">
-                        <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
-                        <h3>Offensive Security</h3>
-                        <p>Penetration testing & Red Teaming</p>
-                    </div>
-                    <div class="expertise-card glass-panel">
-                        <div class="card-icon"><i class="fas fa-cloud"></i></div>
-                        <h3>Cloud Security</h3>
-                        <p>Azure Gov, AWS & SaaS Security</p>
-                    </div>
-                    <div class="expertise-card glass-panel">
-                        <div class="card-icon"><i class="fas fa-file-contract"></i></div>
-                        <h3>Compliance</h3>
-                        <p>PCI DSS, HIPAA, SOC 2, NIST</p>
-                    </div>
-                </div>
+                <div class="expertise-cards" id="about-expertise"><!-- Dynamic Content --></div>
             </div>
         </div>
     </section>
 
     <!-- Skills Section -->
-    <section id="skills" class="skills">
+    <section id="skills">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Technical Arsenal</h2>
-                <p class="section-subtitle">Tools & Technologies</p>
+                <span class="section-subtitle">Skills & Tools</span>
             </div>
-
-            <div class="skills-wrapper">
-                <div class="skill-group">
-                    <h3 class="skill-group-title"><i class="fas fa-bug"></i> Penetration Testing</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Kali Linux</span>
-                        <span class="skill-tag">Burp Suite</span>
-                        <span class="skill-tag">Metasploit</span>
-                        <span class="skill-tag">Nmap</span>
-                        <span class="skill-tag">OWASP ZAP</span>
-                        <span class="skill-tag">SQLmap</span>
-                        <span class="skill-tag">John the Ripper</span>
-                        <span class="skill-tag">Aircrack-ng</span>
-                    </div>
-                </div>
-
-                <div class="skill-group">
-                    <h3 class="skill-group-title"><i class="fas fa-search"></i> Vulnerability Management</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Nessus Pro</span>
-                        <span class="skill-tag">Tenable</span>
-                        <span class="skill-tag">Qualys</span>
-                        <span class="skill-tag">Acunetix</span>
-                        <span class="skill-tag">Wireshark</span>
-                    </div>
-                </div>
-
-                <div class="skill-group">
-                    <h3 class="skill-group-title"><i class="fas fa-code"></i> Programming</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">PowerShell</span>
-                        <span class="skill-tag">Bash</span>
-                        <span class="skill-tag">Java</span>
-                        <span class="skill-tag">C#</span>
-                        <span class="skill-tag">JavaScript</span>
-                    </div>
-                </div>
-
-                <div class="skill-group">
-                    <h3 class="skill-group-title"><i class="fas fa-network-wired"></i> Infrastructure</h3>
-                    <div class="skill-tags">
-                        <span class="skill-tag">Azure Gov</span>
-                        <span class="skill-tag">AWS</span>
-                        <span class="skill-tag">Windows Server</span>
-                        <span class="skill-tag">Linux</span>
-                        <span class="skill-tag">Docker</span>
-                        <span class="skill-tag">Active Directory</span>
-                    </div>
-                </div>
-            </div>
+            <div class="skills-wrapper" id="skills-container"><!-- Dynamic Content --></div>
         </div>
     </section>
 
     <!-- Experience Section -->
-    <section id="experience" class="experience">
+    <section id="experience">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Mission History</h2>
-                <p class="section-subtitle">Professional Experience</p>
+                <h2 class="section-title">Operational History</h2>
+                <span class="section-subtitle">Experience</span>
             </div>
-
             <div class="timeline">
                 <div class="timeline-line"></div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content glass-panel">
-                        <div class="timeline-date">Jun 2024 – Present</div>
-                        <h3 class="timeline-role">Penetration Tester / InfoSec Analyst</h3>
-                        <h4 class="timeline-company">RICEFW Technologies Inc. (State of Michigan)</h4>
-                        <ul class="timeline-list">
-                            <li>Performed web application and API penetration testing using Burp Suite Pro, OWASP ZAP,
-                                and custom scripts.</li>
-                            <li>Built automated scripts for subdomain enumeration, reconnaissance, and OWASP Top-10
-                                validation.</li>
-                            <li>Conducted FedRAMP-style infrastructure scans using Tenable and Nessus scanner agents.
-                            </li>
-                            <li>Built and maintained risk registry in Vanta for SOC 2 compliance tracking.</li>
-                            <li>Developed System Security Plans (SSPs) aligned with NIST 800-53 requirements.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content glass-panel">
-                        <div class="timeline-date">Jun 2022 – Nov 2022</div>
-                        <h3 class="timeline-role">Offensive Security Specialist</h3>
-                        <h4 class="timeline-company">Genzeon Technologies</h4>
-                        <ul class="timeline-list">
-                            <li>Performed penetration testing on healthcare applications, uncovering critical
-                                vulnerabilities.</li>
-                            <li>Conducted HIPAA and PCI DSS compliance assessments for ePHI and cardholder data
-                                protection.</li>
-                            <li>Leveraged Qualys for credentialed vulnerability assessments across Windows/Linux
-                                environments.</li>
-                            <li>Wrote secure coding guidelines focusing on OWASP Top 10 risks in healthcare
-                                applications.</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content glass-panel">
-                        <div class="timeline-date">Apr 2021 – Jun 2022</div>
-                        <h3 class="timeline-role">Support Analyst</h3>
-                        <h4 class="timeline-company">Amazon Development Center</h4>
-                        <ul class="timeline-list">
-                            <li>Provided operational support for global Amazon Selling Partners on security and fraud
-                                prevention.</li>
-                            <li>Identified patterns in suspicious logins and escalated systemic risks to security teams.
-                            </li>
-                            <li>Collaborated with engineering teams to strengthen account recovery workflows.</li>
-                        </ul>
-                    </div>
-                </div>
+                <div id="experience-container"><!-- Dynamic Content --></div>
             </div>
         </div>
     </section>
 
     <!-- Certifications Section -->
-    <section id="certifications" class="certifications">
+    <section id="certifications">
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Credentials</h2>
-                <p class="section-subtitle">Certifications & Education</p>
+                <span class="section-subtitle">Certifications</span>
             </div>
-
-            <div class="certs-grid">
-                <div class="cert-card glass-panel">
-                    <div class="cert-icon"><i class="fas fa-certificate"></i></div>
-                    <h3>CompTIA Security+</h3>
-                    <p class="cert-issuer">CompTIA</p>
-                    <div class="cert-actions">
-                        <a href="securityplus.pdf" class="btn-text" download>Download PDF</a>
-                        <a href="https://www.certmetrics.com/comptia/public/verification.aspx/" target="_blank"
-                            class="btn-text">Verify</a>
-                    </div>
-                </div>
-
-                <div class="cert-card glass-panel">
-                    <div class="cert-icon"><i class="fas fa-user-graduate"></i></div>
-                    <h3>Certified Ethical Hacker</h3>
-                    <p class="cert-issuer">EC-Council</p>
-                    <div class="cert-status">In Progress</div>
-                </div>
-
-                <div class="cert-card glass-panel">
-                    <div class="cert-icon"><i class="fas fa-graduation-cap"></i></div>
-                    <h3>M.S. Information Systems</h3>
-                    <p class="cert-issuer">Central Michigan University</p>
-                    <p class="cert-year">2024</p>
-                </div>
-
-                <div class="cert-card glass-panel">
-                    <div class="cert-icon"><i class="fas fa-university"></i></div>
-                    <h3>B.Tech</h3>
-                    <p class="cert-issuer">Kakatiya Institute of Tech</p>
-                    <p class="cert-year">2020</p>
-                </div>
-            </div>
+            <div class="certs-grid" id="certifications-container"><!-- Dynamic Content --></div>
         </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <section id="contact">
         <div class="container">
             <div class="contact-wrapper glass-panel">
                 <div class="contact-content">
-                    <h2 class="contact-title">Initialize Connection</h2>
-                    <p class="contact-text">Ready to secure your infrastructure? Let's discuss how I can help protect
-                        your digital assets.</p>
-
-                    <div class="contact-methods">
-                        <a href="mailto:tejaparwatha@gmail.com" class="contact-method">
-                            <div class="method-icon"><i class="fas fa-envelope"></i></div>
-                            <div class="method-details">
-                                <span>Email</span>
-                                <strong>tejaparwatha@gmail.com</strong>
-                            </div>
-                        </a>
-
-                        <a href="https://linkedin.com/in/tejaparwatha" target="_blank" class="contact-method">
-                            <div class="method-icon"><i class="fab fa-linkedin"></i></div>
-                            <div class="method-details">
-                                <span>LinkedIn</span>
-                                <strong>/in/tejaparwatha</strong>
-                            </div>
-                        </a>
-
-                        <div class="contact-method">
-                            <div class="method-icon"><i class="fas fa-phone"></i></div>
-                            <div class="method-details">
-                                <span>Phone</span>
-                                <strong>(989) 824-6552</strong>
-                            </div>
-                        </div>
-
-                        <div class="contact-method">
-                            <div class="method-icon"><i class="fas fa-map-marker-alt"></i></div>
-                            <div class="method-details">
-                                <span>Location</span>
-                                <strong>Lansing, MI</strong>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 class="contact-title" id="contact-title">Initialize Connection</h2>
+                    <p class="contact-text" id="contact-text">Ready to secure your infrastructure? Reach out for
+                        collaboration or opportunities.</p>
+                    <div class="contact-methods" id="contact-container"><!-- Dynamic Content --></div>
                 </div>
             </div>
         </div>
@@ -391,16 +177,24 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-logo">SMTP<span class="highlight">/&gt;</span></div>
-                <p class="copyright">&copy; 2024 Sai Manikanta Teja Parwatha. All rights reserved.</p>
+                <div class="footer-logo">
+                    <span class="logo-bracket">&lt;</span>
+                    <span class="logo-text">SMTP</span>
+                    <span class="logo-bracket">/&gt;</span>
+                </div>
+                <div class="copyright">
+                    &copy; 2024 Sai Manikanta Teja Parwatha. All Rights Reserved.
+                </div>
                 <div class="social-links">
-                    <a href="https://linkedin.com/in/tejaparwatha" target="_blank"><i class="fab fa-linkedin"></i></a>
-                    <a href="mailto:tejaparwatha@gmail.com"><i class="fas fa-envelope"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 
